@@ -12,7 +12,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         body {
-            background: linear-gradient(135deg, #0f2027, #2c5364, #00aaff 80%);
+            background: linear-gradient(135deg, #749e9f, #82a8a9, #9bb4b7);
             min-height: 100vh;
             padding: 20px;
             color: #fff;
@@ -392,7 +392,6 @@
             }
             renderGrid();
         }
-        // --- FIXED: Always allow selecting any plant, only block planting if not enough money/stock
         function renderPlantSelection() {
             const container = document.getElementById('plant-selection');
             container.innerHTML = '';
@@ -406,7 +405,6 @@
                     <div>$${plant.cost.toLocaleString()}</div>
                     <div>Stock: ${state.plantStock[key]}</div>
                 `;
-                // Always allow selecting, even if you can't afford/stock
                 div.addEventListener('click', () => {
                     state.selectedPlant = key;
                     renderPlantSelection();
@@ -464,7 +462,6 @@
         function plantSeed(row, col) {
             const cell = state.grid[row][col];
             const plant = PLANT_TYPES[state.selectedPlant];
-            // Only plant if empty, enough money, and stock
             if (!cell.plant && state.money >= plant.cost && state.plantStock[state.selectedPlant] > 0) {
                 cell.plant = state.selectedPlant;
                 cell.plantedAt = Date.now();
