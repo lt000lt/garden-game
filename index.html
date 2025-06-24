@@ -11,15 +11,13 @@
             box-sizing: border-box;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
         body {
-            background: linear-gradient(135deg, #00eaff, #00c6fb, #005bea);
+            background: linear-gradient(135deg, #0f2027, #2c5364, #00aaff 80%);
             min-height: 100vh;
             padding: 20px;
             color: #fff;
             overflow-x: hidden;
         }
-
         .game-container {
             max-width: 1200px;
             margin: 0 auto;
@@ -27,16 +25,13 @@
             gap: 20px;
             flex-wrap: wrap;
         }
-
         .main-area {
             flex: 1;
             min-width: 300px;
         }
-
         .sidebar {
             width: 300px;
         }
-
         .panel {
             background: rgba(255, 255, 255, 0.1);
             backdrop-filter: blur(10px);
@@ -46,7 +41,6 @@
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
         h1 {
             text-align: center;
             font-size: 2.5rem;
@@ -57,14 +51,12 @@
             color: transparent;
             text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
-
         .stats {
             display: flex;
             justify-content: center;
             gap: 20px;
             margin-bottom: 20px;
         }
-
         .stat {
             background: linear-gradient(45deg, #ff9a9e, #fad0c4);
             padding: 15px;
@@ -73,19 +65,16 @@
             min-width: 150px;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
-
         .stat-value {
             font-size: 1.8rem;
             font-weight: bold;
         }
-
         .tools {
             display: flex;
             flex-wrap: wrap;
             gap: 10px;
             margin-bottom: 20px;
         }
-
         .tool-btn {
             flex: 1;
             min-width: 120px;
@@ -99,20 +88,17 @@
             color: white;
             font-size: 1rem;
         }
-
         .tool-btn.active {
             background: linear-gradient(45deg, #4facfe, #00f2fe);
             transform: translateY(-3px);
             box-shadow: 0 7px 15px rgba(0, 0, 0, 0.2);
         }
-
         .plant-selection {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
             gap: 10px;
             margin-bottom: 20px;
         }
-
         .plant-option {
             padding: 10px;
             border-radius: 10px;
@@ -122,18 +108,14 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-
         .plant-option.selected {
             border-color: #4facfe;
             background: rgba(79, 172, 254, 0.2);
             transform: scale(1.05);
         }
-
         .plant-option.disabled {
             opacity: 0.5;
-            cursor: not-allowed;
         }
-
         .grid {
             display: grid;
             grid-template-columns: repeat(8, 1fr);
@@ -144,11 +126,10 @@
             max-width: 600px;
             margin: 0 auto;
         }
-
         .cell {
             aspect-ratio: 1/1;
-            background: #a67c52;
-            border: 2px solid #8b5a2b;
+            background: #1b3d4d;
+            border: 2px solid #15516b;
             border-radius: 10px;
             display: flex;
             align-items: center;
@@ -159,17 +140,14 @@
             position: relative;
             overflow: hidden;
         }
-
         .cell:hover {
             transform: scale(1.05);
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
         }
-
         .cell.ready {
             background: #8fbc8f;
             animation: pulse 1.5s infinite;
         }
-
         .watered::after {
             content: "💧";
             position: absolute;
@@ -177,13 +155,11 @@
             right: 2px;
             font-size: 0.8rem;
         }
-
         .power-ups {
             display: flex;
             flex-direction: column;
             gap: 10px;
         }
-
         .power-up {
             padding: 15px;
             border-radius: 15px;
@@ -192,12 +168,10 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-
         .power-up:hover {
             transform: translateY(-3px);
             background: rgba(255, 255, 255, 0.2);
         }
-
         .instructions {
             background: rgba(0, 0, 0, 0.3);
             padding: 15px;
@@ -205,11 +179,9 @@
             font-size: 0.9rem;
             line-height: 1.5;
         }
-
         .instructions p {
             margin-bottom: 10px;
         }
-
         .modal {
             position: fixed;
             top: 0;
@@ -222,21 +194,18 @@
             justify-content: center;
             z-index: 1000;
         }
-
         .modal-content {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f);
+            background: linear-gradient(135deg, #1a2a6c, #0f2027);
             padding: 30px;
             border-radius: 20px;
             text-align: center;
             max-width: 500px;
             width: 90%;
         }
-
         .modal h2 {
             font-size: 2rem;
             margin-bottom: 20px;
         }
-
         .modal input {
             width: 100%;
             padding: 15px;
@@ -245,7 +214,6 @@
             border: none;
             font-size: 1rem;
         }
-
         .modal button {
             padding: 10px 20px;
             margin: 10px;
@@ -255,13 +223,11 @@
             cursor: pointer;
             font-size: 1rem;
         }
-
         @keyframes pulse {
             0% { transform: scale(1); }
             50% { transform: scale(1.05); }
             100% { transform: scale(1); }
         }
-
         .bonus-indicator {
             position: absolute;
             bottom: 2px;
@@ -276,7 +242,6 @@
     <div class="game-container">
         <div class="main-area">
             <h1>🌱 Garden Growing Game 🌱</h1>
-            
             <div class="panel">
                 <div class="stats">
                     <div class="stat">
@@ -288,22 +253,14 @@
                         <div class="stat-value" id="time">180s</div>
                     </div>
                 </div>
-                
                 <div class="tools">
                     <button class="tool-btn active" data-tool="plant">🌱 Plant</button>
                     <button class="tool-btn" data-tool="water">💧 Water</button>
                     <button class="tool-btn" data-tool="harvest">🪴 Harvest</button>
                     <button class="tool-btn" id="harvest-all">🪴 Harvest All</button>
                 </div>
-                
-                <div class="plant-selection" id="plant-selection">
-                    <!-- Plant options will be generated by JavaScript -->
-                </div>
-                
-                <div class="grid" id="grid">
-                    <!-- 8x8 grid will be generated by JavaScript -->
-                </div>
-                
+                <div class="plant-selection" id="plant-selection"></div>
+                <div class="grid" id="grid"></div>
                 <div class="instructions">
                     <p>🎯 <b>How to play:</b> You have 3 minutes to make as much money as possible!</p>
                     <p>🌱 Plant seeds • 💧 Water plants for +30% profit • 🥕 Harvest mature plants</p>
@@ -312,7 +269,6 @@
                 </div>
             </div>
         </div>
-        
         <div class="sidebar">
             <div class="panel">
                 <h3>⚡ Power-ups</h3>
@@ -327,16 +283,12 @@
                     </div>
                 </div>
             </div>
-            
             <div class="panel">
                 <h3>🏆 Leaderboard</h3>
-                <div id="leaderboard">
-                    <!-- Leaderboard will be populated by JavaScript -->
-                </div>
+                <div id="leaderboard"></div>
             </div>
         </div>
     </div>
-
     <div class="modal" id="game-over-modal" style="display: none;">
         <div class="modal-content">
             <h2>🎉 Game Over! 🎉</h2>
@@ -348,13 +300,11 @@
             </div>
         </div>
     </div>
-
     <script>
         // Game constants
         const GRID_SIZE = 8;
         const INITIAL_MONEY = 50;
         const TOTAL_TIME = 180000; // 3 minutes in milliseconds
-        
         // Plant types
         const PLANT_TYPES = {
             carrot: { name: 'Carrot', cost: 25, growthTime: 3000, valueRange: [30, 60], stages: ['🌱', '🌿', '🥕'] },
@@ -364,7 +314,6 @@
             pepper: { name: 'Pepper', cost: 10000, growthTime: 5500, valueRange: [15000, 23000], stages: ['🌱', '🌿', '🌶️'] },
             pumpkin: { name: 'Pumpkin', cost: 2000, growthTime: 10000, valueRange: [2500, 4500], stages: ['🌱', '🌿', '🎃'] }
         };
-
         // Game state
         let state = {
             grid: [],
@@ -383,15 +332,11 @@
             isMouseDown: false,
             lastStockRefresh: 0
         };
-
         // Initialize game
         function initGame() {
-            // Initialize plant stock
             for (const plant in PLANT_TYPES) {
                 state.plantStock[plant] = 15;
             }
-            
-            // Initialize grid
             state.grid = Array(GRID_SIZE).fill().map(() => 
                 Array(GRID_SIZE).fill().map(() => ({
                     plant: null,
@@ -401,54 +346,35 @@
                     waterBonus: false
                 }))
             );
-            
-            // Render initial game state
             renderPlantSelection();
             renderGrid();
             updateUI();
-            
-            // Start game loop
             startGameLoop();
         }
-
-        // Start game loop
         function startGameLoop() {
             const gameLoop = setInterval(() => {
                 if (state.gameEnded) {
                     clearInterval(gameLoop);
                     return;
                 }
-                
                 state.gameTime += 100;
-                
-                // Check if game time is up
                 if (state.gameTime >= TOTAL_TIME) {
                     endGame();
                     clearInterval(gameLoop);
                     return;
                 }
-                
-                // Update plant growth
                 updatePlantGrowth();
-                
-                // Update UI
                 updateUI();
-                
             }, 100);
         }
-
-        // Update plant growth
         function updatePlantGrowth() {
             for (let row = 0; row < GRID_SIZE; row++) {
                 for (let col = 0; col < GRID_SIZE; col++) {
                     const cell = state.grid[row][col];
                     if (!cell.plant) continue;
-                    
                     const plant = PLANT_TYPES[cell.plant];
                     const timeSincePlanted = Date.now() - cell.plantedAt;
                     const growthProgress = timeSincePlanted / plant.growthTime;
-                    
-                    // Update growth stage
                     if (cell.waterBonus) {
                         if (growthProgress >= 0.33 && cell.stage < 1) cell.stage = 1;
                         if (growthProgress >= 0.66 && cell.stage < 2) cell.stage = 2;
@@ -458,27 +384,20 @@
                     }
                 }
             }
-            
-            // Replenish stock every 30 seconds
             if (state.gameTime - state.lastStockRefresh >= 30000) {
                 for (const plant in PLANT_TYPES) {
                     state.plantStock[plant] = 15;
                 }
                 state.lastStockRefresh = state.gameTime;
             }
-            
-            // Re-render grid to show updates
             renderGrid();
         }
-
-        // Render plant selection
+        // --- FIXED: Always allow selecting any plant, only block planting if not enough money/stock
         function renderPlantSelection() {
             const container = document.getElementById('plant-selection');
             container.innerHTML = '';
-            
             for (const [key, plant] of Object.entries(PLANT_TYPES)) {
-                // Only disable if you have neither money nor stock!
-                const isDisabled = state.money < plant.cost || state.plantStock[key] === 0;
+                const isDisabled = state.plantStock[key] === 0;
                 const div = document.createElement('div');
                 div.className = `plant-option${state.selectedPlant === key ? ' selected' : ''}${isDisabled ? ' disabled' : ''}`;
                 div.innerHTML = `
@@ -487,22 +406,17 @@
                     <div>$${plant.cost.toLocaleString()}</div>
                     <div>Stock: ${state.plantStock[key]}</div>
                 `;
+                // Always allow selecting, even if you can't afford/stock
                 div.addEventListener('click', () => {
-                    // Only allow selecting if not disabled
-                    if (!isDisabled) {
-                        state.selectedPlant = key;
-                        renderPlantSelection();
-                    }
+                    state.selectedPlant = key;
+                    renderPlantSelection();
                 });
                 container.appendChild(div);
             }
         }
-
-        // Render game grid
         function renderGrid() {
             const grid = document.getElementById('grid');
             grid.innerHTML = '';
-            
             for (let row = 0; row < GRID_SIZE; row++) {
                 for (let col = 0; col < GRID_SIZE; col++) {
                     const cell = state.grid[row][col];
@@ -510,19 +424,11 @@
                     cellDiv.className = 'cell';
                     cellDiv.dataset.row = row;
                     cellDiv.dataset.col = col;
-                    
                     if (cell.plant) {
                         const plant = PLANT_TYPES[cell.plant];
                         cellDiv.textContent = plant.stages[cell.stage];
-                        
-                        if (cell.stage === 2) {
-                            cellDiv.classList.add('ready');
-                        }
-                        
-                        if (cell.watered) {
-                            cellDiv.classList.add('watered');
-                        }
-                        
+                        if (cell.stage === 2) cellDiv.classList.add('ready');
+                        if (cell.watered) cellDiv.classList.add('watered');
                         if (cell.waterBonus) {
                             const bonus = document.createElement('div');
                             bonus.className = 'bonus-indicator';
@@ -532,27 +438,17 @@
                     } else {
                         cellDiv.textContent = '🟫';
                     }
-                    
                     cellDiv.addEventListener('mousedown', () => handleCellAction(row, col, true));
                     cellDiv.addEventListener('mouseenter', () => {
-                        if (state.isMouseDown) {
-                            handleCellAction(row, col, false);
-                        }
+                        if (state.isMouseDown) handleCellAction(row, col, false);
                     });
-                    
                     grid.appendChild(cellDiv);
                 }
             }
         }
-
-        // Handle cell actions
         function handleCellAction(row, col, isMouseDown) {
-            if (isMouseDown) {
-                state.isMouseDown = true;
-            }
-            
+            if (isMouseDown) state.isMouseDown = true;
             const cell = state.grid[row][col];
-            
             switch (state.tool) {
                 case 'plant':
                     plantSeed(row, col);
@@ -561,14 +457,10 @@
                     waterPlant(row, col);
                     break;
                 case 'harvest':
-                    if (cell.plant && cell.stage === 2) {
-                        harvestPlant(row, col);
-                    }
+                    if (cell.plant && cell.stage === 2) harvestPlant(row, col);
                     break;
             }
         }
-
-        // Plant seed
         function plantSeed(row, col) {
             const cell = state.grid[row][col];
             const plant = PLANT_TYPES[state.selectedPlant];
@@ -579,17 +471,13 @@
                 cell.stage = 0;
                 cell.watered = false;
                 cell.waterBonus = false;
-
                 state.money -= plant.cost;
                 state.plantStock[state.selectedPlant]--;
-
                 renderGrid();
-                renderPlantSelection(); // Always refresh plant selection
+                renderPlantSelection();
                 updateUI();
             }
         }
-
-        // Water plant
         function waterPlant(row, col) {
             const cell = state.grid[row][col];
             if (cell.plant && !cell.watered) {
@@ -598,57 +486,35 @@
                 renderGrid();
             }
         }
-
-        // Harvest plant
         function harvestPlant(row, col) {
             const cell = state.grid[row][col];
             const plant = PLANT_TYPES[cell.plant];
-            
             let harvestValue = Math.floor(
                 Math.random() * (plant.valueRange[1] - plant.valueRange[0] + 1) + plant.valueRange[0]
             );
-            
-            // Apply water bonus
-            if (cell.waterBonus) {
-                harvestValue = Math.floor(harvestValue * 1.3);
-            }
-            
-            // Apply power-up bonus
+            if (cell.waterBonus) harvestValue = Math.floor(harvestValue * 1.3);
             if (state.activePowerUp) {
-                if (state.activePowerUp === 'sunlight') {
-                    harvestValue *= 2;
-                } else if (state.activePowerUp === 'frozen') {
-                    harvestValue *= 3;
-                }
+                if (state.activePowerUp === 'sunlight') harvestValue *= 2;
+                else if (state.activePowerUp === 'frozen') harvestValue *= 3;
             }
-            
             state.money += harvestValue;
-            
-            // Reset cell
             cell.plant = null;
             cell.stage = 0;
             cell.plantedAt = null;
             cell.watered = false;
             cell.waterBonus = false;
-            
             renderGrid();
             renderPlantSelection();
             updateUI();
         }
-
-        // Harvest all ready plants
         function harvestAll() {
             for (let row = 0; row < GRID_SIZE; row++) {
                 for (let col = 0; col < GRID_SIZE; col++) {
                     const cell = state.grid[row][col];
-                    if (cell.plant && cell.stage === 2) {
-                        harvestPlant(row, col);
-                    }
+                    if (cell.plant && cell.stage === 2) harvestPlant(row, col);
                 }
             }
         }
-
-        // Activate power-up
         function activatePowerUp(power) {
             if (power === 'sunlight' && state.sunlightUses > 0 && !state.activePowerUp) {
                 state.sunlightUses--;
@@ -668,36 +534,23 @@
                 updateUI();
             }
         }
-
-        // Update UI elements
         function updateUI() {
-            // Update money display
             document.getElementById('money').textContent = state.money.toLocaleString();
-            
-            // Update time display
             const timeLeft = Math.max(0, Math.floor((TOTAL_TIME - state.gameTime) / 1000));
             document.getElementById('time').textContent = `${timeLeft}s`;
-            
-            // Update tool buttons
             document.querySelectorAll('.tool-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.tool === state.tool);
             });
-            
-            // Update power-up displays
             document.querySelector('[data-power="sunlight"] .power-desc').textContent = 
                 `+100% value (${state.sunlightUses} uses)`;
             document.querySelector('[data-power="frozen"] .power-desc').textContent = 
                 `+200% value (${state.frozenUses} uses)`;
         }
-
-        // End game
         function endGame() {
             state.gameEnded = true;
             document.getElementById('final-score').textContent = state.money.toLocaleString();
             document.getElementById('game-over-modal').style.display = 'flex';
         }
-
-        // Reset game
         function resetGame() {
             state = {
                 grid: [],
@@ -716,12 +569,9 @@
                 isMouseDown: false,
                 lastStockRefresh: 0
             };
-            
             document.getElementById('game-over-modal').style.display = 'none';
             initGame();
         }
-
-        // Submit score to leaderboard
         function submitScore() {
             const name = document.getElementById('player-name').value.trim();
             if (name) {
@@ -730,24 +580,15 @@
                     score: state.money,
                     date: new Date().toLocaleDateString()
                 });
-                
-                // Sort and keep top 10
                 state.leaderboard.sort((a, b) => b.score - a.score);
                 state.leaderboard = state.leaderboard.slice(0, 10);
-                
-                // Render leaderboard
                 renderLeaderboard();
-                
-                // Reset game
                 resetGame();
             }
         }
-
-        // Render leaderboard
         function renderLeaderboard() {
             const container = document.getElementById('leaderboard');
             container.innerHTML = '';
-            
             state.leaderboard.forEach((entry, index) => {
                 const div = document.createElement('div');
                 div.className = 'leaderboard-entry';
@@ -758,38 +599,25 @@
                 container.appendChild(div);
             });
         }
-
-        // Initialize event listeners
         function initEventListeners() {
-            // Tool selection
             document.querySelectorAll('.tool-btn').forEach(btn => {
-                if (!btn.id) { // Exclude Harvest All button
+                if (!btn.id) {
                     btn.addEventListener('click', () => {
                         state.tool = btn.dataset.tool;
                         updateUI();
                     });
                 }
             });
-            
-            // Harvest All button
             document.getElementById('harvest-all').addEventListener('click', harvestAll);
-            
-            // Power-up buttons
             document.querySelectorAll('.power-up').forEach(btn => {
                 btn.addEventListener('click', () => activatePowerUp(btn.dataset.power));
             });
-            
-            // Game over modal buttons
             document.getElementById('submit-score').addEventListener('click', submitScore);
             document.getElementById('play-again').addEventListener('click', resetGame);
-            
-            // Mouse up event to end drag action
             document.addEventListener('mouseup', () => {
                 state.isMouseDown = false;
             });
         }
-
-        // Initialize the game when page loads
         window.onload = function() {
             initGame();
             initEventListeners();
