@@ -1,0 +1,20 @@
+{
+  "name": "garden-game",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "https://your-username.github.io/garden-game",
+  "dependencies": {
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "react-scripts": "latest",
+    "lucide-react": "latest"
+  },
+  "scripts": {
+    "start": "react-scripts start",
+    "build": "react-scripts build",
+    "test": "react-scripts test",
+    "eject": "react-scripts eject",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d build"
+  }
+}
