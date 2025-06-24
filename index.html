@@ -13,7 +13,7 @@
         }
 
         body {
-            background: linear-gradient(135deg, #1a2a6c, #b21f1f, #1a2a6c);
+            background: linear-gradient(135deg, #00eaff, #00c6fb, #005bea);
             min-height: 100vh;
             padding: 20px;
             color: #fff;
@@ -477,8 +477,10 @@
             container.innerHTML = '';
             
             for (const [key, plant] of Object.entries(PLANT_TYPES)) {
+                // Only disable if you have neither money nor stock!
+                const isDisabled = state.money < plant.cost || state.plantStock[key] === 0;
                 const div = document.createElement('div');
-                div.className = `plant-option ${state.selectedPlant === key ? 'selected' : ''} ${state.money < plant.cost || state.plantStock[key] === 0 ? 'disabled' : ''}`;
+                div.className = `plant-option${state.selectedPlant === key ? ' selected' : ''}${isDisabled ? ' disabled' : ''}`;
                 div.innerHTML = `
                     <div>${plant.stages[0]}</div>
                     <div><b>${plant.name}</b></div>
@@ -486,7 +488,8 @@
                     <div>Stock: ${state.plantStock[key]}</div>
                 `;
                 div.addEventListener('click', () => {
-                    if (state.money >= plant.cost && state.plantStock[key] > 0) {
+                    // Only allow selecting if not disabled
+                    if (!isDisabled) {
                         state.selectedPlant = key;
                         renderPlantSelection();
                     }
@@ -569,19 +572,19 @@
         function plantSeed(row, col) {
             const cell = state.grid[row][col];
             const plant = PLANT_TYPES[state.selectedPlant];
-            
+            // Only plant if empty, enough money, and stock
             if (!cell.plant && state.money >= plant.cost && state.plantStock[state.selectedPlant] > 0) {
                 cell.plant = state.selectedPlant;
                 cell.plantedAt = Date.now();
                 cell.stage = 0;
                 cell.watered = false;
                 cell.waterBonus = false;
-                
+
                 state.money -= plant.cost;
                 state.plantStock[state.selectedPlant]--;
-                
+
                 renderGrid();
-                renderPlantSelection();
+                renderPlantSelection(); // Always refresh plant selection
                 updateUI();
             }
         }
@@ -629,6 +632,7 @@
             cell.waterBonus = false;
             
             renderGrid();
+            renderPlantSelection();
             updateUI();
         }
 
