@@ -224,6 +224,7 @@
             justify-content: center;
             gap: 1rem;
             margin-bottom: 1.5rem;
+            flex-wrap: wrap;
         }
 
         .tool-btn {
@@ -292,7 +293,7 @@
 
         .plant-btn {
             padding: 0.75rem 1rem;
-            border: 2px solid;
+            border: 2px solid #d1d5db;
             border-radius: 0.75rem;
             cursor: pointer;
             transition: all 0.3s;
@@ -380,6 +381,7 @@
         .grid-cell:hover {
             transform: scale(1.05);
             box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            border-color: #f59e0b;
         }
 
         .grid-cell.ready-harvest {
@@ -387,10 +389,6 @@
             background: linear-gradient(135deg, #d1fae5, #a7f3d0);
             box-shadow: 0 8px 16px rgba(16, 185, 129, 0.3);
             animation: pulse 1s infinite;
-        }
-
-        .grid-cell:hover {
-            border-color: #f59e0b;
         }
 
         .cell-content {
@@ -681,11 +679,16 @@
             white-space: nowrap;
             overflow: hidden;
             text-overflow: ellipsis;
+            max-width: 100px;
         }
 
         .player-score {
             font-weight: bold;
             color: #059669;
+        }
+
+        .hidden {
+            display: none !important;
         }
 
         @media (max-width: 1200px) {
@@ -759,18 +762,18 @@
                     </div>
                 </div>
 
-                <div id="power-up-active" class="power-up-active" style="display: none;">
+                <div id="power-up-active" class="power-up-active hidden">
                     <div id="power-up-badge" class="power-up-badge"></div>
                 </div>
 
-                <div id="game-over" class="game-over" style="display: none;">
+                <div id="game-over" class="game-over hidden">
                     <h2>🎉 Game Over! 🎉</h2>
-                    <p class="final-score">Final Score: <span id="final-score" class="score-value"></span></p>
+                    <p class="final-score">Final Score: <span id="final-score" class="score-value">$0</span></p>
                     <button id="add-to-leaderboard" class="btn btn-green" style="margin-right: 1rem;">🏆 Add to Leaderboard</button>
                     <button id="play-again" class="btn btn-blue">🔄 Play Again</button>
                 </div>
 
-                <div id="name-input-section" class="name-input-section" style="display: none;">
+                <div id="name-input-section" class="name-input-section hidden">
                     <h3>✨ Enter Your Name ✨</h3>
                     <div class="name-input-form">
                         <input type="text" id="player-name" class="name-input" placeholder="Enter your name" maxlength="20">
@@ -828,7 +831,11 @@
             <!-- Leaderboard -->
             <div class="leaderboard-panel">
                 <h3 class="leaderboard-title">🏆 Leaderboard</h3>
-                <div id="leaderboard-list" class="leaderboard-list"></div>
+                <div id="leaderboard-list" class="leaderboard-list">
+                    <div style="text-align: center; color: #6b7280; font-style: italic; padding: 1rem;">
+                        Play and submit your score to see the leaderboard!
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -851,36 +858,54 @@
         };
 
         // Game state
-        let grid = [];
-        let money = INITIAL_MONEY;
-        let selectedPlant = 'carrot';
-        let tool = 'plant';
-        let gameTime = 0;
-        let gameEnded = false;
-        let sunlightUses = 2;
-        let frozenUses = 1;
-        let activePowerUp = null;
-        let plantStock = {};
-        let powerUpEffects = {};
-        let isMouseDown = false;
-        let gameInterval = null;
+        let gameState = {
+            grid: [],
+            money: INITIAL_MONEY,
+            selectedPlant: 'carrot',
+            tool: 'plant',
+            gameTime: 0,
+            gameEnded: false,
+            sunlightUses: 2,
+            frozenUses: 1,
+            activePowerUp: null,
+            plantStock: {},
+            powerUpEffects: {},
+            isMouseDown: false,
+            gameInterval: null,
+            powerUpTimeout: null
+        };
 
         // DOM elements
-        const moneyDisplay = document.getElementById('money-display');
-        const timeDisplay = document.getElementById('time-display');
-        const powerUpActive = document.getElementById('power-up-active');
-        const powerUpBadge = document.getElementById('power-up-badge');
-        const gameOverDiv = document.getElementById('game-over');
-        const finalScoreSpan = document.getElementById('final-score');
-        const nameInputSection = document.getElementById('name-input-section');
-        const playerNameInput = document.getElementById('player-name');
-        const toolsDiv = document.getElementById('tools');
-        const plantSelectionDiv = document.getElementById('plant-selection');
-        const gardenGridDiv = document.getElementById('garden-grid');
-        const leaderboardList = document.getElementById('leaderboard-list');
-        const powerUpsDiv = document.getElementById('power-ups');
-        const sunlightUsesSpan = document.getElementById('sunlight-uses');
-        const frozenUsesSpan = document.getElementById('frozen-uses');
+        const elements = {
+            moneyDisplay: document.getElementById('money-display'),
+            timeDisplay: document.getElementById('time-display'),
+            powerUpActive: document.getElementById('power-up-active'),
+            powerUpBadge: document.getElementById('power-up-badge'),
+            gameOverDiv: document.getElementById('game-over'),
+            finalScoreSpan: document.getElementById('final-score'),
+            nameInputSection: document.getElementById('name-input-section'),
+            playerNameInput: document.getElementById('player-name'),
+            toolsDiv: document.getElementById('tools'),
+            plantSelectionDiv: document.getElementById('plant-selection'),
+            gardenGridDiv: document.getElementById('garden-grid'),
+            leaderboardList: document.getElementById('leaderboard-list'),
+            powerUpsDiv: document.getElementById('power-ups'),
+            sunlightUsesSpan: document.getElementById('sunlight-uses'),
+            frozenUsesSpan: document.getElementById('frozen-uses')
+        };
+
+        // Utility functions
+        function formatMoney(amount) {
+            return `$${amount.toLocaleString()}`;
+        }
+
+        function show(element) {
+            element.classList.remove('hidden');
+        }
+
+        function hide(element) {
+            element.classList.add('hidden');
+        }
 
         // Initialize game
         function initializeGame() {
@@ -895,7 +920,7 @@
         }
 
         function initializeGrid() {
-            grid = Array(GRID_SIZE).fill(null).map(() => 
+            gameState.grid = Array(GRID_SIZE).fill(null).map(() => 
                 Array(GRID_SIZE).fill(null).map(() => ({
                     plant: null,
                     stage: 0,
@@ -908,30 +933,30 @@
         }
 
         function initializePlantStock() {
-            plantStock = {};
+            gameState.plantStock = {};
             Object.keys(PLANT_TYPES).forEach(plant => {
-                plantStock[plant] = 15;
+                gameState.plantStock[plant] = 15;
             });
         }
 
         function createPlantSelection() {
-            plantSelectionDiv.innerHTML = '';
+            elements.plantSelectionDiv.innerHTML = '';
             Object.entries(PLANT_TYPES).forEach(([key, plant]) => {
                 const button = document.createElement('button');
                 button.className = 'plant-btn';
                 button.dataset.plant = key;
                 button.innerHTML = `
                     <div class="plant-name">${plant.name}</div>
-                    <div class="plant-cost">$${plant.cost.toLocaleString()}</div>
-                    <div class="plant-value">$${plant.valueRange[0].toLocaleString()}-${plant.valueRange[1].toLocaleString()}</div>
-                    <div class="plant-stock">Stock: <span class="stock-count">${plantStock[key]}</span></div>
+                    <div class="plant-cost">${formatMoney(plant.cost)}</div>
+                    <div class="plant-value">${formatMoney(plant.valueRange[0])}-${formatMoney(plant.valueRange[1])}</div>
+                    <div class="plant-stock">Stock: <span class="stock-count">${gameState.plantStock[key]}</span></div>
                 `;
-                plantSelectionDiv.appendChild(button);
+                elements.plantSelectionDiv.appendChild(button);
             });
         }
 
         function createGardenGrid() {
-            gardenGridDiv.innerHTML = '';
+            elements.gardenGridDiv.innerHTML = '';
             for (let row = 0; row < GRID_SIZE; row++) {
                 for (let col = 0; col < GRID_SIZE; col++) {
                     const cell = document.createElement('button');
@@ -939,40 +964,47 @@
                     cell.dataset.row = row;
                     cell.dataset.col = col;
                     cell.innerHTML = '<div class="cell-content"><span class="plant-emoji">🟫</span></div>';
-                    gardenGridDiv.appendChild(cell);
+                    elements.gardenGridDiv.appendChild(cell);
                 }
             }
         }
 
         function updateDisplay() {
-            moneyDisplay.textContent = `$${money.toLocaleString()}`;
-            timeDisplay.textContent = `${Math.floor((GAME_DURATION - gameTime) / 1000)}s left`;
-            sunlightUsesSpan.textContent = sunlightUses;
-            frozenUsesSpan.textContent = frozenUses;
+            // Update stats
+            elements.moneyDisplay.textContent = formatMoney(gameState.money);
+            elements.timeDisplay.textContent = `${Math.floor((GAME_DURATION - gameState.gameTime) / 1000)}s left`;
+            elements.sunlightUsesSpan.textContent = gameState.sunlightUses;
+            elements.frozenUsesSpan.textContent = gameState.frozenUses;
 
             // Update plant selection buttons
             document.querySelectorAll('.plant-btn').forEach(btn => {
                 const plantKey = btn.dataset.plant;
                 const plant = PLANT_TYPES[plantKey];
                 const stockCount = btn.querySelector('.stock-count');
-                stockCount.textContent = plantStock[plantKey];
+                if (stockCount) {
+                    stockCount.textContent = gameState.plantStock[plantKey];
+                }
                 
                 // Update button state
-                const canAfford = money >= plant.cost;
-                const hasStock = plantStock[plantKey] > 0;
-                const isSelected = selectedPlant === plantKey;
+                const canAfford = gameState.money >= plant.cost;
+                const hasStock = gameState.plantStock[plantKey] > 0;
+                const isSelected = gameState.selectedPlant === plantKey;
                 
                 btn.className = 'plant-btn';
                 if (isSelected) btn.classList.add('selected');
                 if (!canAfford || !hasStock) btn.classList.add('disabled');
                 
                 // Update stock color
-                if (plantStock[plantKey] > 5) {
-                    stockCount.className = 'stock-high';
-                } else if (plantStock[plantKey] > 0) {
-                    stockCount.className = 'stock-medium';
-                } else {
-                    stockCount.className = 'stock-empty';
+                const stockElement = btn.querySelector('.stock-count');
+                if (stockElement) {
+                    stockElement.className = 'stock-count';
+                    if (gameState.plantStock[plantKey] > 5) {
+                        stockElement.classList.add('stock-high');
+                    } else if (gameState.plantStock[plantKey] > 0) {
+                        stockElement.classList.add('stock-medium');
+                    } else {
+                        stockElement.classList.add('stock-empty');
+                    }
                 }
                 
                 // Add out of stock overlay
@@ -993,48 +1025,52 @@
             const sunlightBtn = document.getElementById('sunlight-power');
             const frozenBtn = document.getElementById('frozen-power');
             
-            if (sunlightUses === 0 || activePowerUp) {
-                sunlightBtn.classList.add('disabled');
-            } else {
-                sunlightBtn.classList.remove('disabled');
+            if (sunlightBtn) {
+                if (gameState.sunlightUses === 0 || gameState.activePowerUp) {
+                    sunlightBtn.classList.add('disabled');
+                } else {
+                    sunlightBtn.classList.remove('disabled');
+                }
             }
             
-            if (frozenUses === 0 || activePowerUp) {
-                frozenBtn.classList.add('disabled');
-            } else {
-                frozenBtn.classList.remove('disabled');
+            if (frozenBtn) {
+                if (gameState.frozenUses === 0 || gameState.activePowerUp) {
+                    frozenBtn.classList.add('disabled');
+                } else {
+                    frozenBtn.classList.remove('disabled');
+                }
             }
 
             // Update active power-up display
-            if (activePowerUp) {
-                powerUpActive.style.display = 'block';
-                if (activePowerUp === 'sunlight') {
-                    powerUpBadge.textContent = '✨ Sunlight Active! (+100% value) ✨';
-                    powerUpBadge.className = 'power-up-badge sunlight-active';
-                } else if (activePowerUp === 'frozen') {
-                    powerUpBadge.textContent = '✨ Frozen Active! (+200% value) ✨';
-                    powerUpBadge.className = 'power-up-badge frozen-active';
+            if (gameState.activePowerUp) {
+                show(elements.powerUpActive);
+                if (gameState.activePowerUp === 'sunlight') {
+                    elements.powerUpBadge.textContent = '✨ Sunlight Active! (+100% value) ✨';
+                    elements.powerUpBadge.className = 'power-up-badge sunlight-active';
+                } else if (gameState.activePowerUp === 'frozen') {
+                    elements.powerUpBadge.textContent = '✨ Frozen Active! (+200% value) ✨';
+                    elements.powerUpBadge.className = 'power-up-badge frozen-active';
                 }
             } else {
-                powerUpActive.style.display = 'none';
+                hide(elements.powerUpActive);
             }
 
             // Show/hide game elements based on game state
-            if (gameEnded) {
-                toolsDiv.style.display = 'none';
-                plantSelectionDiv.style.display = 'none';
-                powerUpsDiv.style.display = 'none';
-                gameOverDiv.style.display = 'block';
-                finalScoreSpan.textContent = `$${money.toLocaleString()}`;
+            if (gameState.gameEnded) {
+                hide(elements.toolsDiv);
+                hide(elements.plantSelectionDiv);
+                hide(elements.powerUpsDiv);
+                show(elements.gameOverDiv);
+                elements.finalScoreSpan.textContent = formatMoney(gameState.money);
             } else {
-                if (tool === 'plant') {
-                    plantSelectionDiv.style.display = 'grid';
+                if (gameState.tool === 'plant') {
+                    show(elements.plantSelectionDiv);
                 } else {
-                    plantSelectionDiv.style.display = 'none';
+                    hide(elements.plantSelectionDiv);
                 }
-                toolsDiv.style.display = 'flex';
-                powerUpsDiv.style.display = 'block';
-                gameOverDiv.style.display = 'none';
+                show(elements.toolsDiv);
+                show(elements.powerUpsDiv);
+                hide(elements.gameOverDiv);
             }
 
             updateGardenDisplay();
@@ -1045,8 +1081,10 @@
             cells.forEach(cell => {
                 const row = parseInt(cell.dataset.row);
                 const col = parseInt(cell.dataset.col);
-                const cellData = grid[row][col];
+                const cellData = gameState.grid[row][col];
                 const content = cell.querySelector('.cell-content');
+                
+                if (!content) return;
                 
                 if (!cellData.plant) {
                     content.innerHTML = '<span class="plant-emoji">🟫</span>';
@@ -1055,7 +1093,7 @@
                     const plant = PLANT_TYPES[cellData.plant];
                     const emoji = plant.stages[cellData.stage];
                     const cellKey = `${row}-${col}`;
-                    const powerUpEffect = powerUpEffects[cellKey];
+                    const powerUpEffect = gameState.powerUpEffects[cellKey];
                     
                     let html = `<span class="plant-emoji">${emoji}</span>`;
                     
@@ -1083,22 +1121,24 @@
         }
 
         function startGameLoop() {
-            if (gameInterval) clearInterval(gameInterval);
+            if (gameState.gameInterval) {
+                clearInterval(gameState.gameInterval);
+            }
             
-            gameInterval = setInterval(() => {
-                if (gameEnded) return;
+            gameState.gameInterval = setInterval(() => {
+                if (gameState.gameEnded) return;
                 
-                gameTime += 100;
+                gameState.gameTime += 100;
                 
                 // Check stock refresh
-                if (gameTime % STOCK_REFRESH_INTERVAL === 0 && gameTime > 0) {
+                if (gameState.gameTime % STOCK_REFRESH_INTERVAL === 0 && gameState.gameTime > 0) {
                     Object.keys(PLANT_TYPES).forEach(plant => {
-                        plantStock[plant] = 15;
+                        gameState.plantStock[plant] = 15;
                     });
                 }
                 
                 // Check game end
-                if (gameTime >= GAME_DURATION) {
+                if (gameState.gameTime >= GAME_DURATION) {
                     endGame();
                     return;
                 }
@@ -1110,7 +1150,7 @@
         }
 
         function updatePlantGrowth() {
-            grid.forEach(row => {
+            gameState.grid.forEach(row => {
                 row.forEach(cell => {
                     if (!cell.plant) return;
                     
@@ -1134,8 +1174,13 @@
         }
 
         function endGame() {
-            gameEnded = true;
-            if (gameInterval) clearInterval(gameInterval);
+            gameState.gameEnded = true;
+            if (gameState.gameInterval) {
+                clearInterval(gameState.gameInterval);
+            }
+            if (gameState.powerUpTimeout) {
+                clearTimeout(gameState.powerUpTimeout);
+            }
             
             // Clear all plants without giving money
             initializeGrid();
@@ -1143,24 +1188,24 @@
         }
 
         function plantSeed(row, col) {
-            const cell = grid[row][col];
-            const plant = PLANT_TYPES[selectedPlant];
+            const cell = gameState.grid[row][col];
+            const plant = PLANT_TYPES[gameState.selectedPlant];
             
-            if (!cell.plant && money >= plant.cost && plantStock[selectedPlant] > 0) {
-                cell.plant = selectedPlant;
+            if (!cell.plant && gameState.money >= plant.cost && gameState.plantStock[gameState.selectedPlant] > 0) {
+                cell.plant = gameState.selectedPlant;
                 cell.stage = 0;
                 cell.plantedAt = Date.now();
                 cell.watered = false;
                 cell.lastWatered = null;
                 cell.waterBonus = false;
                 
-                money -= plant.cost;
-                plantStock[selectedPlant]--;
+                gameState.money -= plant.cost;
+                gameState.plantStock[gameState.selectedPlant]--;
             }
         }
 
         function waterPlant(row, col) {
-            const cell = grid[row][col];
+            const cell = gameState.grid[row][col];
             if (cell.plant && !cell.waterBonus) {
                 cell.watered = true;
                 cell.lastWatered = Date.now();
@@ -1169,7 +1214,7 @@
         }
 
         function harvestPlant(row, col) {
-            const cell = grid[row][col];
+            const cell = gameState.grid[row][col];
             if (!cell.plant || cell.stage !== 2) return;
             
             const plant = PLANT_TYPES[cell.plant];
@@ -1181,25 +1226,25 @@
             }
             
             // Apply power-up effects
-            if (activePowerUp) {
+            if (gameState.activePowerUp) {
                 const cellKey = `${row}-${col}`;
                 
                 // Show visual effect
-                powerUpEffects[cellKey] = activePowerUp;
+                gameState.powerUpEffects[cellKey] = gameState.activePowerUp;
                 setTimeout(() => {
-                    delete powerUpEffects[cellKey];
+                    delete gameState.powerUpEffects[cellKey];
                     updateGardenDisplay();
                 }, 2000);
                 
-                if (activePowerUp === 'sunlight') {
+                if (gameState.activePowerUp === 'sunlight') {
                     harvestValue *= 2; // 100% boost
-                } else if (activePowerUp === 'frozen') {
+                } else if (gameState.activePowerUp === 'frozen') {
                     harvestValue *= 3; // 200% boost
                 }
             }
             
             harvestValue = Math.floor(harvestValue);
-            money += harvestValue;
+            gameState.money += harvestValue;
             
             // Clear cell
             cell.plant = null;
@@ -1212,7 +1257,7 @@
 
         function harvestAll() {
             let totalHarvested = 0;
-            grid.forEach((row, rowIndex) => {
+            gameState.grid.forEach((row, rowIndex) => {
                 row.forEach((cell, colIndex) => {
                     if (cell.plant && cell.stage === 2) {
                         harvestPlant(rowIndex, colIndex);
@@ -1224,49 +1269,54 @@
         }
 
         function activatePowerUp(type) {
-            if (activePowerUp) return;
+            if (gameState.activePowerUp) return;
             
-            if (type === 'sunlight' && sunlightUses > 0) {
-                sunlightUses--;
-                activePowerUp = 'sunlight';
-                setTimeout(() => {
-                    activePowerUp = null;
+            if (type === 'sunlight' && gameState.sunlightUses > 0) {
+                gameState.sunlightUses--;
+                gameState.activePowerUp = 'sunlight';
+                gameState.powerUpTimeout = setTimeout(() => {
+                    gameState.activePowerUp = null;
                     updateDisplay();
                 }, 8000);
-            } else if (type === 'frozen' && frozenUses > 0) {
-                frozenUses--;
-                activePowerUp = 'frozen';
-                setTimeout(() => {
-                    activePowerUp = null;
+            } else if (type === 'frozen' && gameState.frozenUses > 0) {
+                gameState.frozenUses--;
+                gameState.activePowerUp = 'frozen';
+                gameState.powerUpTimeout = setTimeout(() => {
+                    gameState.activePowerUp = null;
                     updateDisplay();
                 }, 8000);
             }
         }
 
         function resetGame() {
-            if (gameInterval) clearInterval(gameInterval);
+            if (gameState.gameInterval) {
+                clearInterval(gameState.gameInterval);
+            }
+            if (gameState.powerUpTimeout) {
+                clearTimeout(gameState.powerUpTimeout);
+            }
             
-            gameTime = 0;
-            money = INITIAL_MONEY;
-            gameEnded = false;
-            selectedPlant = 'carrot';
-            tool = 'plant';
-            sunlightUses = 2;
-            frozenUses = 1;
-            activePowerUp = null;
-            powerUpEffects = {};
-            isMouseDown = false;
+            gameState.gameTime = 0;
+            gameState.money = INITIAL_MONEY;
+            gameState.gameEnded = false;
+            gameState.selectedPlant = 'carrot';
+            gameState.tool = 'plant';
+            gameState.sunlightUses = 2;
+            gameState.frozenUses = 1;
+            gameState.activePowerUp = null;
+            gameState.powerUpEffects = {};
+            gameState.isMouseDown = false;
             
             // Reset UI
-            nameInputSection.style.display = 'none';
-            playerNameInput.value = '';
+            hide(elements.nameInputSection);
+            elements.playerNameInput.value = '';
             
             // Update tool selection
-            document.querySelectorAll('.tool-btn').forEach(btn => {
+            document.querySelectorAll('.tool-btn[data-tool]').forEach(btn => {
                 if (btn.dataset.tool === 'plant') {
                     btn.classList.add('active');
                     btn.classList.remove('inactive');
-                } else if (btn.dataset.tool) {
+                } else {
                     btn.classList.remove('active');
                     btn.classList.add('inactive');
                 }
@@ -1287,7 +1337,8 @@
                     displayLeaderboard(leaderboard);
                 }
             } catch (e) {
-                console.log('Note: Leaderboard persistence not available in this environment');
+                // Fallback for environments without localStorage
+                console.log('Leaderboard storage not available');
             }
         }
 
@@ -1295,12 +1346,24 @@
             try {
                 localStorage.setItem('gardenGameLeaderboard', JSON.stringify(leaderboard));
             } catch (e) {
-                console.log('Note: Leaderboard persistence not available in this environment');
+                console.log('Leaderboard storage not available');
             }
         }
 
         function displayLeaderboard(leaderboard) {
-            leaderboardList.innerHTML = '';
+            if (!elements.leaderboardList) return;
+            
+            elements.leaderboardList.innerHTML = '';
+            
+            if (!leaderboard || leaderboard.length === 0) {
+                elements.leaderboardList.innerHTML = `
+                    <div style="text-align: center; color: #6b7280; font-style: italic; padding: 1rem;">
+                        Play and submit your score to see the leaderboard!
+                    </div>
+                `;
+                return;
+            }
+            
             leaderboard.slice(0, 5).forEach((entry, index) => {
                 const div = document.createElement('div');
                 div.className = 'leaderboard-entry';
@@ -1309,9 +1372,9 @@
                         <span class="rank-number">#${index + 1}</span>
                         <span class="player-name">${entry.name}</span>
                     </div>
-                    <span class="player-score">$${entry.score.toLocaleString()}</span>
+                    <span class="player-score">${formatMoney(entry.score)}</span>
                 `;
-                leaderboardList.appendChild(div);
+                elements.leaderboardList.appendChild(div);
             });
         }
 
@@ -1335,7 +1398,7 @@
                 saveLeaderboard(leaderboard);
                 displayLeaderboard(leaderboard);
             } catch (e) {
-                console.log('Note: Leaderboard persistence not available in this environment');
+                console.log('Leaderboard storage not available');
             }
         }
 
@@ -1343,9 +1406,9 @@
             // Tool selection
             document.querySelectorAll('.tool-btn[data-tool]').forEach(btn => {
                 btn.addEventListener('click', () => {
-                    if (gameEnded) return;
+                    if (gameState.gameEnded) return;
                     
-                    tool = btn.dataset.tool;
+                    gameState.tool = btn.dataset.tool;
                     document.querySelectorAll('.tool-btn[data-tool]').forEach(b => {
                         b.classList.remove('active');
                         b.classList.add('inactive');
@@ -1357,34 +1420,37 @@
             });
 
             // Harvest all
-            document.getElementById('harvest-all').addEventListener('click', () => {
-                if (!gameEnded) {
-                    harvestAll();
-                    updateDisplay();
-                }
-            });
+            const harvestAllBtn = document.getElementById('harvest-all');
+            if (harvestAllBtn) {
+                harvestAllBtn.addEventListener('click', () => {
+                    if (!gameState.gameEnded) {
+                        harvestAll();
+                        updateDisplay();
+                    }
+                });
+            }
 
             // Plant selection
-            plantSelectionDiv.addEventListener('click', (e) => {
+            elements.plantSelectionDiv.addEventListener('click', (e) => {
                 const btn = e.target.closest('.plant-btn');
                 if (btn && !btn.classList.contains('disabled')) {
-                    selectedPlant = btn.dataset.plant;
+                    gameState.selectedPlant = btn.dataset.plant;
                     updateDisplay();
                 }
             });
 
             // Garden grid interactions
-            gardenGridDiv.addEventListener('mousedown', (e) => {
+            elements.gardenGridDiv.addEventListener('mousedown', (e) => {
                 e.preventDefault();
                 const cell = e.target.closest('.grid-cell');
-                if (cell && !gameEnded) {
-                    isMouseDown = true;
+                if (cell && !gameState.gameEnded) {
+                    gameState.isMouseDown = true;
                     handleCellInteraction(cell);
                 }
             });
 
-            gardenGridDiv.addEventListener('mousemove', (e) => {
-                if (isMouseDown && !gameEnded) {
+            elements.gardenGridDiv.addEventListener('mouseover', (e) => {
+                if (gameState.isMouseDown && !gameState.gameEnded) {
                     const cell = e.target.closest('.grid-cell');
                     if (cell) {
                         handleCellInteraction(cell);
@@ -1393,69 +1459,98 @@
             });
 
             document.addEventListener('mouseup', () => {
-                isMouseDown = false;
+                gameState.isMouseDown = false;
             });
 
             // Power-ups
-            document.getElementById('sunlight-power').addEventListener('click', () => {
-                if (!gameEnded) {
-                    activatePowerUp('sunlight');
-                    updateDisplay();
-                }
-            });
+            const sunlightBtn = document.getElementById('sunlight-power');
+            const frozenBtn = document.getElementById('frozen-power');
+            
+            if (sunlightBtn) {
+                sunlightBtn.addEventListener('click', () => {
+                    if (!gameState.gameEnded) {
+                        activatePowerUp('sunlight');
+                        updateDisplay();
+                    }
+                });
+            }
 
-            document.getElementById('frozen-power').addEventListener('click', () => {
-                if (!gameEnded) {
-                    activatePowerUp('frozen');
-                    updateDisplay();
-                }
-            });
+            if (frozenBtn) {
+                frozenBtn.addEventListener('click', () => {
+                    if (!gameState.gameEnded) {
+                        activatePowerUp('frozen');
+                        updateDisplay();
+                    }
+                });
+            }
 
             // Game controls
-            document.getElementById('reset-game').addEventListener('click', resetGame);
-            document.getElementById('play-again').addEventListener('click', resetGame);
+            const resetBtn = document.getElementById('reset-game');
+            const playAgainBtn = document.getElementById('play-again');
+            const addToLeaderboardBtn = document.getElementById('add-to-leaderboard');
+            const submitScoreBtn = document.getElementById('submit-score');
             
-            document.getElementById('add-to-leaderboard').addEventListener('click', () => {
-                nameInputSection.style.display = 'block';
-                gameOverDiv.style.display = 'none';
-            });
+            if (resetBtn) resetBtn.addEventListener('click', resetGame);
+            if (playAgainBtn) playAgainBtn.addEventListener('click', resetGame);
+            
+            if (addToLeaderboardBtn) {
+                addToLeaderboardBtn.addEventListener('click', () => {
+                    show(elements.nameInputSection);
+                    hide(elements.gameOverDiv);
+                });
+            }
 
-            document.getElementById('submit-score').addEventListener('click', () => {
-                const name = playerNameInput.value.trim();
-                if (name) {
-                    addToLeaderboard(name, money);
-                    nameInputSection.style.display = 'none';
-                    gameOverDiv.style.display = 'block';
-                    playerNameInput.value = '';
-                }
-            });
+            if (submitScoreBtn) {
+                submitScoreBtn.addEventListener('click', () => {
+                    const name = elements.playerNameInput.value.trim();
+                    if (name) {
+                        addToLeaderboard(name, gameState.money);
+                        hide(elements.nameInputSection);
+                        show(elements.gameOverDiv);
+                        elements.playerNameInput.value = '';
+                    }
+                });
+            }
 
             // Enter key for name submission
-            playerNameInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    document.getElementById('submit-score').click();
-                }
-            });
+            if (elements.playerNameInput) {
+                elements.playerNameInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        const submitBtn = document.getElementById('submit-score');
+                        if (submitBtn) submitBtn.click();
+                    }
+                });
+            }
         }
 
         function handleCellInteraction(cell) {
             const row = parseInt(cell.dataset.row);
             const col = parseInt(cell.dataset.col);
-            const cellData = grid[row][col];
+            const cellData = gameState.grid[row][col];
             
-            if (tool === 'plant') {
+            if (gameState.tool === 'plant') {
                 plantSeed(row, col);
-            } else if (tool === 'water') {
+            } else if (gameState.tool === 'water') {
                 waterPlant(row, col);
-            } else if (tool === 'harvest' && cellData.plant && cellData.stage === 2) {
+            } else if (gameState.tool === 'harvest' && cellData.plant && cellData.stage === 2) {
                 harvestPlant(row, col);
             }
             
             updateDisplay();
         }
 
-        // Start the game
-        initializeGame();
+        // Start the game when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            initializeGame();
+        });
+
+        // Also start immediately in case DOM is already loaded
+        if (document.readyState === 'loading') {
+            // DOM is still loading, wait for DOMContentLoaded
+        } else {
+            // DOM is already loaded
+            initializeGame();
+        }
     </script>
 </body>
 </html>
