@@ -5,3 +5,5 @@ This was inspired by following https://medium.com/@limtoole/this-30-minute-vibe-
 
 Play game here.
 https://lt000lt.github.io/garden-game/
+
+Submit ideas and feedback as a GitHub pull request at https://github.com/lt000lt/garden-game/.
